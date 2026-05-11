@@ -252,52 +252,141 @@
     width: 360px;
     height: 260px;
     cursor: pointer;
-    filter: drop-shadow(0 22px 55px rgba(160,80,110,0.28));
-    transition: filter 0.35s, transform 0.35s;
-    perspective: 800px;
+    filter:
+      drop-shadow(0 4px 6px rgba(120,40,70,0.22))
+      drop-shadow(0 18px 24px rgba(140,60,90,0.28))
+      drop-shadow(0 38px 60px rgba(160,80,110,0.35));
+    transition: filter 0.4s ease, transform 0.4s ease;
+    perspective: 1400px;
+    transform-style: preserve-3d;
+    transform: rotateX(8deg) rotateY(-3deg);
   }
   #envelope-wrap:hover {
-    filter: drop-shadow(0 30px 70px rgba(160,80,110,0.4));
-    transform: translateY(-5px);
+    filter:
+      drop-shadow(0 6px 8px rgba(120,40,70,0.25))
+      drop-shadow(0 24px 32px rgba(140,60,90,0.32))
+      drop-shadow(0 50px 80px rgba(160,80,110,0.45));
+    transform: rotateX(4deg) rotateY(-2deg) translateY(-8px) scale(1.015);
   }
 
+  /* Realistic paper envelope body */
   .env-body {
     position: absolute;
     inset: 0;
-    background: linear-gradient(155deg, #f0b4c4 0%, #e5a0b8 55%, #d08ea8 100%);
-    border-radius: 6px;
+    background:
+      /* subtle paper fiber speckles */
+      radial-gradient(circle at 20% 30%, rgba(255,255,255,0.08) 0.5px, transparent 1.2px),
+      radial-gradient(circle at 70% 60%, rgba(120,50,80,0.06) 0.5px, transparent 1.2px),
+      radial-gradient(circle at 45% 80%, rgba(255,255,255,0.06) 0.5px, transparent 1.2px),
+      /* directional lighting */
+      radial-gradient(ellipse at 25% 15%, rgba(255,235,240,0.45) 0%, transparent 55%),
+      radial-gradient(ellipse at 80% 90%, rgba(140,55,85,0.35) 0%, transparent 60%),
+      linear-gradient(155deg, #f3bccb 0%, #e5a0b8 55%, #c87fa0 100%);
+    background-size: 3px 3px, 4px 4px, 5px 5px, 100% 100%, 100% 100%, 100% 100%;
+    border-radius: 8px;
     overflow: hidden;
-    box-shadow: inset 0 0 40px rgba(255,255,255,0.25);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.55),
+      inset 0 -2px 6px rgba(120,40,70,0.25),
+      inset 2px 0 4px rgba(255,255,255,0.15),
+      inset -2px 0 4px rgba(120,40,70,0.18),
+      inset 0 0 60px rgba(255,255,255,0.18);
+  }
+  .env-body::before {
+    /* paper grain texture */
+    content: '';
+    position: absolute; inset: 0;
+    background-image:
+      repeating-linear-gradient(37deg, rgba(255,255,255,0.04) 0 1px, transparent 1px 3px),
+      repeating-linear-gradient(-52deg, rgba(120,50,80,0.04) 0 1px, transparent 1px 4px);
+    mix-blend-mode: overlay;
+    pointer-events: none;
   }
   .env-body::after {
     content: '';
     position: absolute; inset: 0;
     background:
-      repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.06) 2px, rgba(255,255,255,0.06) 3px),
-      repeating-linear-gradient(90deg, transparent, transparent 5px, rgba(255,255,255,0.03) 5px, rgba(255,255,255,0.03) 6px);
+      repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.05) 2px, rgba(255,255,255,0.05) 3px),
+      repeating-linear-gradient(90deg, transparent, transparent 5px, rgba(255,255,255,0.025) 5px, rgba(255,255,255,0.025) 6px);
+    pointer-events: none;
   }
 
+  /* Left & right triangular flaps with folded-paper depth */
   .env-side {
     position: absolute;
     top: 0; bottom: 0;
     width: 55%;
     clip-path: polygon(0 0, 100% 50%, 0 100%);
-    background: linear-gradient(135deg, #da90ae 0%, #c880a0 100%);
+    background:
+      linear-gradient(135deg,
+        #e9a3bd 0%,
+        #d690ad 35%,
+        #b97292 75%,
+        #a35e80 100%);
     left: 0;
     z-index: 3;
+    filter:
+      drop-shadow(2px 0 3px rgba(110,40,70,0.35))
+      drop-shadow(0 2px 4px rgba(110,40,70,0.25));
+  }
+  .env-side::before {
+    /* fold crease highlight along the diagonal */
+    content: '';
+    position: absolute; inset: 0;
+    background:
+      linear-gradient(135deg, rgba(255,255,255,0.35) 0%, transparent 30%),
+      linear-gradient(225deg, rgba(0,0,0,0.18) 0%, transparent 35%);
+    clip-path: inherit;
   }
   .env-side.right {
     left: auto; right: 0;
     clip-path: polygon(100% 0, 0 50%, 100% 100%);
-    background: linear-gradient(225deg, #da90ae 0%, #c880a0 100%);
+    background:
+      linear-gradient(225deg,
+        #e9a3bd 0%,
+        #d690ad 35%,
+        #b97292 75%,
+        #a35e80 100%);
+    filter:
+      drop-shadow(-2px 0 3px rgba(110,40,70,0.35))
+      drop-shadow(0 2px 4px rgba(110,40,70,0.25));
   }
+  .env-side.right::before {
+    background:
+      linear-gradient(225deg, rgba(255,255,255,0.35) 0%, transparent 30%),
+      linear-gradient(135deg, rgba(0,0,0,0.18) 0%, transparent 35%);
+  }
+
+  /* Bottom flap rising to the seal — the front face of the envelope */
   .env-bottom {
     position: absolute;
     bottom: 0; left: 0; right: 0;
     height: 110px;
     clip-path: polygon(0 100%, 100% 100%, 50% 0%);
-    background: linear-gradient(0deg, #bf78a0 0%, #d090aa 100%);
+    background:
+      linear-gradient(0deg,
+        #b06d92 0%,
+        #c483a3 45%,
+        #d090aa 100%);
     z-index: 2;
+    filter: drop-shadow(0 -3px 6px rgba(110,40,70,0.4));
+  }
+  .env-bottom::before {
+    /* crisp fold line and top highlight on the rising flap */
+    content: '';
+    position: absolute; inset: 0;
+    clip-path: inherit;
+    background:
+      linear-gradient(0deg, transparent 0%, transparent 88%, rgba(255,255,255,0.55) 96%, rgba(255,255,255,0.85) 100%),
+      linear-gradient(180deg, rgba(255,255,255,0.18) 0%, transparent 25%);
+  }
+  .env-bottom::after {
+    /* subtle inner shadow at the base for depth */
+    content: '';
+    position: absolute; left: 0; right: 0; bottom: 0;
+    height: 18px;
+    background: linear-gradient(0deg, rgba(80,30,55,0.35), transparent);
+    pointer-events: none;
   }
 
   .env-flap { display: none; }
